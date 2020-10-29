@@ -287,7 +287,7 @@
       >
         <el-table-column prop="fileName" label="文件名称" min-width="360"></el-table-column>
         <el-table-column prop="filePath" v-if="false" label="文件路径"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column label="操作" min-width="150">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -324,7 +324,7 @@
 
 <script>
 import { listReport, getReport, delReport, addReport, updateReport, exportReport,issue,listAsset ,
-  listDetail,delDetailFile,downloadFile} from "@/api/system/report";
+  listDetail,delDetailFile,downloadFile,download_file} from "@/api/system/report";
 
 export default {
   name: "Report",
@@ -414,11 +414,11 @@ export default {
       data.append('name',row.fileName);
       data.append('reportPath',row.filePath);
       downloadFile(data).then(response =>{
-        console.log(response);
-        this.download(response);
+        download_file(response,row.fileName)
         }
       );
     },
+
     /** 详情按钮操作 */
     handleDetail(row){
       this.listDetailData=[]
