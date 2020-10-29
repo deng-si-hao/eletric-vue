@@ -45,15 +45,15 @@
 <!--          @keyup.enter.native="handleQuery"-->
 <!--        />-->
 <!--      </el-form-item>-->
-<!--      <el-form-item label="所属车辆id" prop="assetId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.assetId"-->
-<!--          placeholder="请输入所属车辆id"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <el-form-item label="所属车辆id" prop="assetId">
+        <el-input
+          v-model="queryParams.assetId"
+          placeholder="请输入所属车辆id"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="所属单位" prop="unit">
         <el-input
           v-model="queryParams.unit"
@@ -277,8 +277,8 @@
         <el-table-column prop="unit" label="所属单位" show-overflow-tooltip></el-table-column>
       </el-table>
       <pagination
-        v-show="totals>0"
-        :total="totals"
+        v-show="total>0"
+        :total="total"
         :page.sync="queryParamList.pageNum"
         :limit.sync="queryParamList.pageSize"
         @pagination="getList"
@@ -330,8 +330,6 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 对话框总条数
-      totals: 0,
       // 图片存储表格数据
       pictureList: [],
       // 弹出层标题
@@ -428,7 +426,7 @@ export default {
       this.loading = true;
       listAsset(this.queryParamList).then(response =>{
         this.tableData = response.rows;
-        this.totals = response.total;
+        this.total = response.total;
         this.loading = false;
       });
 

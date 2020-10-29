@@ -418,7 +418,6 @@ export default {
         }
       );
     },
-
     /** 详情按钮操作 */
     handleDetail(row){
       this.listDetailData=[]
