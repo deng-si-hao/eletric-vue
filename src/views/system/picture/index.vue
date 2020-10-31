@@ -45,15 +45,15 @@
 <!--          @keyup.enter.native="handleQuery"-->
 <!--        />-->
 <!--      </el-form-item>-->
-      <el-form-item label="所属车辆id" prop="assetId">
-        <el-input
-          v-model="queryParams.assetId"
-          placeholder="请输入所属车辆id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="所属车辆id" prop="assetId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.assetId"-->
+<!--          placeholder="请输入所属车辆id"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="所属单位" prop="unit">
         <el-input
           v-model="queryParams.unit"
@@ -163,6 +163,13 @@
             @click="handlePreview(scope.row)"
             v-if="scope.row.unit === null"
           >预览</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-download"
+            @click="downloadFiles(scope.row)"
+            v-if="scope.row.unit === null"
+          >下载</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -211,6 +218,7 @@
             :multiple="multiple"
             :headers="myHeaders"
             action
+            accept=".jpg,.png,.jpge"
             list-type="picture-card"
             :auto-upload="false"
             :http-request="uploadFile"
@@ -309,7 +317,7 @@
 </template>
 
 <script>
-import { listPicture, getPicture, delPicture, addPicture, updatePicture, exportPicture,issue,listAsset,preview } from "@/api/system/picture";
+import { listPicture, getPicture, delPicture, addPicture, updatePicture, exportPicture,issue,listAsset,preview ,downloadFile,download_file} from "@/api/system/picture";
 
 export default {
   name: "Picture",
@@ -591,20 +599,16 @@ export default {
         })
         this.dialogVisiblesImage = true
       })
-
     },
-    blobToBase(blob){
-      return new Promise((resolve,reject) => {
-        const fileReader = new FileReader();
-        fileReader.onload = (e) =>{
-          resolve(e.target.result);
-        };
-        fileReader.readAsDataURL(blob);
-        fileReader.onerror = () =>{
-          reject(new Error('文件流异常'));
-        };
+    /** 批量下载文件 */
+    downloadFiles(row){
+      const data = new FormData();
+      data.append('assetId',row.assetId);
+      data.append('path',row.picturePath);
+      downloadFile(data).then(res =>{
+        download_file(res,row.name)
       });
-    }
+    },
   }
 };
 </script>

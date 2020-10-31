@@ -164,10 +164,11 @@
           <el-input v-model="form.unit" disabled="disabled" placeholder="下发时自动填入" />
         </el-form-item>
         <el-form-item>
-          <el-upload class="upload" action :http-request="dataUpload">
+          <el-upload class="upload" accept=".xlsx, .xls" action :http-request="dataUpload">
                <el-button type="primary" size="small" class="choose">上传数据</el-button>
              </el-upload>
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
