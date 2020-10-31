@@ -68,15 +68,3 @@ export function listAsset(query) {
     params: query
   })
 }
-
-// 预览图片列表
-export function preview(data) {
-  return request({
-    url: '/system/picture/preview',
-    method: 'post',
-    data:data,
-  })
-}
-
-
-

@@ -36,15 +36,15 @@
 <!--          @keyup.enter.native="handleQuery"-->
 <!--        />-->
 <!--      </el-form-item>-->
-<!--      <el-form-item label="所属车辆id" prop="assetId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.assetId"-->
-<!--          placeholder="请输入所属车辆id"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <el-form-item label="所属车辆id" prop="assetId">
+        <el-input
+          v-model="queryParams.assetId"
+          placeholder="请输入所属车辆id"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="所属单位" prop="unit">
         <el-input
           v-model="queryParams.unit"
@@ -261,8 +261,8 @@
         <el-table-column prop="unit" label="所属单位" show-overflow-tooltip></el-table-column>
       </el-table>
       <pagination
-        v-show="totals>0"
-        :total="totals"
+        v-show="total>0"
+        :total="total"
         :page.sync="queryParamList.pageNum"
         :limit.sync="queryParamList.pageSize"
         @pagination="getList"
@@ -287,7 +287,7 @@
       >
         <el-table-column prop="fileName" label="文件名称" min-width="360"></el-table-column>
         <el-table-column prop="filePath" v-if="false" label="文件路径"></el-table-column>
-        <el-table-column label="操作" min-width="150">
+        <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -305,7 +305,7 @@
             <el-button  size="mini"
                         type="text"
                         icon="el-icon-share"
-                        @click="handlePreview(scope.row)"
+                        @click="handleDetail(scope.row)"
                         v-hasPermi="['system:report:detail']"
             >预览</el-button>
           </template>
@@ -324,7 +324,7 @@
 
 <script>
 import { listReport, getReport, delReport, addReport, updateReport, exportReport,issue,listAsset ,
-  listDetail,delDetailFile,downloadFile,download_file} from "@/api/system/report";
+  listDetail,delDetailFile,downloadFile} from "@/api/system/report";
 
 export default {
   name: "Report",
@@ -361,8 +361,6 @@ export default {
       showSearchd:false,
       // 总条数
       total: 0,
-      // 对话框总条数
-      totals: 0,
       // 文档存储表格数据
       reportList: [],
       // 弹出层标题
@@ -402,21 +400,18 @@ export default {
   },
   methods: {
 
-    //hdfs:192.168.10.266:5000/a/b.txt
-    /** 文件预览 */
-    handlePreview(row){
-    var url = row.filePath;
-      window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(url));
-    },
     /** 下载hadoop中存储的文件 */
     downloadFile(row){
       const data = new FormData();
       data.append('name',row.fileName);
       data.append('reportPath',row.filePath);
-      downloadFile(data).then(response =>{
-        download_file(response,row.fileName)
-        }
-      );
+      this.$confirm('是否确认下载文档存储编号为"' + row.fileName + '"的数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function() {
+        return  window.open(`http://localhost:80/system/report/delDetailFile?name=${row.fileName}&reportPath=${row.filePath}`);
+      })
     },
     /** 详情按钮操作 */
     handleDetail(row){
@@ -489,7 +484,7 @@ export default {
       this.loading = true;
       listAsset(this.queryParamList).then(response =>{
         this.tableData = response.rows;
-        this.totals = response.total;
+        this.total = response.total;
         this.loading = false;
       });
     },

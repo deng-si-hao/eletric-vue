@@ -156,13 +156,6 @@
             v-hasPermi="['system:picture:issue']"
             v-if="scope.row.unit === null"
           >下发</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-share"
-            @click="handlePreview(scope.row)"
-            v-if="scope.row.unit === null"
-          >预览</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -296,29 +289,16 @@
         <el-button type="primary" @click="handlerOk">确 定</el-button>
       </div>
     </el-dialog>
-    <!--图片展示-->
-
-    <el-dialog title="预览图" :visible.sync="dialogVisiblesImage" center width="50%">
-      <div v-for="item in imgUrlMany" :key="item" style="width:40%;float: left;">
-        <img :src="item.url" width="100%" style="margin:0 auto">
-      </div>
-      <div style="clear: both"></div>
-    </el-dialog>
-
   </div>
 </template>
 
 <script>
-import { listPicture, getPicture, delPicture, addPicture, updatePicture, exportPicture,issue,listAsset,preview } from "@/api/system/picture";
+import { listPicture, getPicture, delPicture, addPicture, updatePicture, exportPicture,issue,listAsset } from "@/api/system/picture";
 
 export default {
   name: "Picture",
   data() {
     return {
-      //图片参数
-      imgUrlMany: [],
-      dialogVisiblesImage: false,
-
       tableData:[],
       multipleSelection: [],
       dialogTableVisible: false,
@@ -576,39 +556,11 @@ export default {
         }).then(response => {
           this.download(response.msg);
         }).catch(function() {});
-    },
-    /** 预览按钮操作 */
-    handlePreview(row){
-      const data = new FormData();
-      data.append('assetId',row.assetId);
-      data.append('path',row.picturePath);
-      preview(data).then(res =>{
-        console.log(res)
-        this.imgUrlMany = res.data.map(item => {
-          return {
-            url: item
-          }
-        })
-        this.dialogVisiblesImage = true
-      })
-
-    },
-    blobToBase(blob){
-      return new Promise((resolve,reject) => {
-        const fileReader = new FileReader();
-        fileReader.onload = (e) =>{
-          resolve(e.target.result);
-        };
-        fileReader.readAsDataURL(blob);
-        fileReader.onerror = () =>{
-          reject(new Error('文件流异常'));
-        };
-      });
     }
   }
 };
 </script>
-<style lang="scss" scoped>
+<style>
   .single-select-table thead .el-table-column--selection .cell{
     display: none;
   }
